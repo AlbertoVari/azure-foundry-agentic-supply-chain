@@ -3,7 +3,99 @@
 This repo contains a **reference implementation** (code-first) of the Udacity “Agentic Supply Chain” project.
 It mirrors the required two-layer, five-agent architecture described in the project instructions. fileciteturn0file0
 
-## Architecture
+### Project Description
+
+This project implements an **end-to-end automated supply chain workflow** using **Agent Services in Microsoft Azure AI Foundry**.
+The solution demonstrates how a **multi-agent, agentic architecture** can be designed and orchestrated entirely through **configuration and prompt engineering**, without relying on complex application code.
+
+The goal of the system is to automate a real-world procurement workflow by enabling AI agents to **collaborate, reason, and act sequentially** to move from product demand to purchase order generation.
+
+---
+
+### 🧠 Architecture Overview
+
+The solution follows a **two-layer agentic architecture** composed of one orchestrator agent and four specialized worker agents:
+
+1. **Orchestrator Agent (GPT-4.1)**
+
+   * Acts as the workflow manager
+   * Routes tasks to agents in a fixed sequence
+   * Captures structured JSON outputs from each agent
+   * Halts execution if any agent returns an error or missing data signal
+
+2. **BOM Generation Agent (GPT-4.1 Mini)**
+
+   * Extracts a **Bill of Materials (BOM)** from unstructured Sales Kit documents
+   * Outputs a deterministic JSON schema
+   * Handles missing product definitions gracefully
+
+3. **Inventory Evaluation Agent (GPT-4.1 Mini)**
+
+   * Queries an **Azure AI Search index** connected to an Azure Storage Table
+   * Compares BOM requirements against available stock
+   * Identifies material shortages
+
+4. **Supplier Analysis Agent (GPT-4.1)**
+
+   * Uses a curated supplier knowledge base
+   * Matches missing materials with approved suppliers
+   * Performs analytical reasoning to map materials to vendors
+
+5. **Purchase Order Agent (GPT-4.1 Mini)**
+
+   * Generates professional purchase orders
+   * Uses a Python Code Interpreter tool to insert the current date
+   * Produces formatted, human-readable PO documents
+
+---
+
+### 🔄 Automated Workflow
+
+The agentic workflow executes the following steps:
+
+1. User submits a request to build a product
+2. BOM is extracted from sales documentation
+3. Inventory availability is checked
+4. Missing materials are identified
+5. Approved suppliers are selected
+6. Purchase orders are generated when required
+
+This mirrors real-world procurement and inventory management processes, improving **resilience, efficiency, and decision-making**.
+
+---
+
+### ☁️ Cloud-Native Implementation
+
+* Built entirely in **Azure AI Foundry**
+* Uses **Azure Storage Tables** and **Azure AI Search**
+* Leverages **knowledge grounding**, **tools**, and **agent orchestration**
+* Designed to run fully in the cloud with no local setup required
+
+---
+
+### ✅ Validation & Testing
+
+The project includes:
+
+* Partial agent tests (unit-style validation)
+* Full end-to-end workflow execution
+* Evidence captured via chat logs and screenshots
+* Structured validation report aligned with the project rubric
+
+---
+
+### 🎯 Key Skills Demonstrated
+
+* Agentic AI system design
+* Multi-agent orchestration
+* Prompt engineering & routing logic
+* Knowledge-augmented AI agents
+* Azure AI Foundry, Search, and Storage integration
+* Iterative validation and error-handling workflows
+
+
+
+## Stack
 
 - **Orchestrator Agent (GPT-4.1, temp=1)**: routes and halts on failures.
 - **BOM Generation Agent (GPT-4.1 Mini, temp=0)**: extracts BOM from Sales Kit PDFs.
