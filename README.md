@@ -98,15 +98,13 @@ The project includes:
 - **Supplier Analysis Agent (GPT-4.1, temp>=0.7)**: finds suppliers from Suppliers PDF.
 - **Purchase Order Agent (GPT-4.1 Mini, temp=0)**: formats PO and uses `date.py` via Code Interpreter.
 
-> Note: In the Udacity lab you can implement the whole workflow in the Foundry UI via configuration.
-> This repo is useful if you want to reproduce the same behavior programmatically.
 
 ## Repo layout
 
 - `prompts/` – System prompts for each agent (ready to paste into Foundry).
 - `data/` – Provided PDFs + `date.py` + inventory seed CSV.
 - `src/` – Python scripts to create agents and run the 5 required test prompts.
-- `submission_template.md` – Udacity submission template (copied from the assets zip).
+
 
 ## Prereqs
 
