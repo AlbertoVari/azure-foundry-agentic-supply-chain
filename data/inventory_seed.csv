@@ -1,0 +1,9 @@
+RowKey,PartitionKey,MaterialName,Quantity
+1,Inventory,Aluminosilicateceramicfiber,"Aluminosilicate ceramic fiber: 12 in stock"
+2,Inventory,BNi2powder,"BNi-2 composition (Ni-7Cr-3B-3Si-3Fe) gas-atomized powder: 20 kg in stock"
+3,Inventory,Inconel600,"Inconel 600: 18 in stock"
+4,Inventory,Inconel625seamlesstubing,"Inconel 625 seamless tubing: 18 in stock"
+5,Inventory,Inconel625sheetmaterial,"Inconel 625 sheet material: 10 in stock"
+6,Inventory,InconelX,"Inconel X-750: 75 in stock"
+7,Inventory,aluminumoxide,"85% aluminum oxide: 14 in stock"
+8,Inventory,silicondioxide,"silicon dioxide: 14 in stock"
