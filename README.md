@@ -1,135 +1,55 @@
-# Agentic Supply Chain Workflow
+# Azure AI Foundry – Agentic Supply Chain (Udacity Project)
 
-**Microsoft Azure AI Foundry – Multi-Agent System**
-
-## Overview
-
-This repository contains an **end-to-end agentic supply chain workflow** built using **Microsoft Azure AI Foundry**.
-The project demonstrates how to design and orchestrate a **multi-agent system** using **prompt engineering and cloud configuration only**, without writing complex application logic.
-
-The workflow automates a real-world **procurement and inventory management process**, moving from product demand to supplier purchase orders through coordinated AI agents.
-
----
+This repo contains a **reference implementation** (code-first) of the Udacity “Agentic Supply Chain” project.
+It mirrors the required two-layer, five-agent architecture described in the project instructions. fileciteturn0file0
 
 ## Architecture
 
-The solution implements a **two-layer agentic architecture**:
+- **Orchestrator Agent (GPT-4.1, temp=1)**: routes and halts on failures.
+- **BOM Generation Agent (GPT-4.1 Mini, temp=0)**: extracts BOM from Sales Kit PDFs.
+- **Inventory Evaluation Agent (GPT-4.1 Mini, temp=0)**: checks stock via Azure AI Search (`rawmaterials` index).
+- **Supplier Analysis Agent (GPT-4.1, temp>=0.7)**: finds suppliers from Suppliers PDF.
+- **Purchase Order Agent (GPT-4.1 Mini, temp=0)**: formats PO and uses `date.py` via Code Interpreter.
 
-### 1. Orchestration Layer
+> Note: In the Udacity lab you can implement the whole workflow in the Foundry UI via configuration.
+> This repo is useful if you want to reproduce the same behavior programmatically.
 
-* **Orchestrator Agent (GPT-4.1)**
+## Repo layout
 
-  * Acts as the workflow manager
-  * Routes tasks to worker agents in a fixed execution order
-  * Collects and validates structured JSON outputs
-  * Halts execution if any agent returns an error or missing-data signal
+- `prompts/` – System prompts for each agent (ready to paste into Foundry).
+- `data/` – Provided PDFs + `date.py` + inventory seed CSV.
+- `src/` – Python scripts to create agents and run the 5 required test prompts.
+- `submission_template.md` – Udacity submission template (copied from the assets zip).
 
-### 2. Worker Agent Layer
+## Prereqs
 
-Four specialized agents perform discrete supply-chain tasks:
+- Python 3.10+
+- Install deps:
+  ```bash
+  pip install -r requirements.txt
+  ```
 
-| Agent                          | Model        | Responsibility                                                         |
-| ------------------------------ | ------------ | ---------------------------------------------------------------------- |
-| **BOM Generation Agent**       | GPT-4.1 Mini | Extracts Bill of Materials (BOM) from unstructured Sales Kit documents |
-| **Inventory Evaluation Agent** | GPT-4.1 Mini | Queries Azure AI Search to validate inventory availability             |
-| **Supplier Analysis Agent**    | GPT-4.1      | Matches missing materials with approved suppliers                      |
-| **Purchase Order Agent**       | GPT-4.1 Mini | Generates formatted purchase orders using a Python Code Interpreter    |
+## Configure
 
----
+Copy `.env.example` to `.env` and fill values.
 
-## Automated Workflow
+## Run
 
-The system executes the following deterministic pipeline:
+Create agents (optional, if you want code-first provisioning):
+```bash
+python -m src.create_agents
+```
 
-1. User submits a product build request
-2. BOM is extracted from Sales Kit documentation
-3. Inventory is checked against warehouse stock
-4. Material shortages are identified
-5. Approved suppliers are selected
-6. Purchase orders are generated if required
+Run tests:
+```bash
+python -m src.run_tests
+```
 
-If any step fails (e.g., missing Sales Kit or material not found), the orchestrator **halts the workflow** to prevent error propagation.
+## Notes about Azure AI Foundry APIs
 
----
+Azure AI Foundry/Agent Services APIs may differ by region/tenant and can evolve.
+This repo includes:
+- an SDK-based path (if available in your environment), and
+- a REST fallback skeleton (so you can adapt quickly).
 
-## Cloud Resources Used
-
-* **Azure AI Foundry**
-
-  * Agent Services
-  * Model deployments (GPT-4.1 & GPT-4.1 Mini)
-* **Azure Storage Table**
-
-  * Raw material inventory data
-* **Azure AI Search**
-
-  * Inventory index and indexer
-* **Knowledge Files**
-
-  * Sales Kits (PDF)
-  * Supplier List (PDF)
-* **Code Interpreter Tool**
-
-  * Python script for dynamic date insertion in purchase orders
-
----
-
-## Configuration Highlights
-
-* **Deterministic agents** (BOM, Inventory, Orders) use **Temperature = 0**
-* **Analytical agents** (Supplier Analysis) use **higher temperature**
-* **Orchestrator** uses **high temperature** for flexible routing logic
-* All agent communication uses **strict JSON schemas**
-* Validation and halt logic is enforced at each stage
-
----
-
-## Testing Strategy
-
-The project includes **five required test scenarios**:
-
-### Partial (Unit-Style) Tests
-
-1. BOM extraction validation
-2. Inventory lookup via Azure AI Search
-3. Supplier knowledge retrieval
-4. Purchase order generation with Code Interpreter
-
-### End-to-End Test
-
-5. Full workflow execution from user request → purchase order
-
-All tests produce:
-
-* Structured intermediate JSON outputs
-* Human-readable summaries
-* Traceable agent execution order
-
----
-
-## Key Concepts Demonstrated
-
-* Agentic AI system design
-* Multi-agent orchestration patterns
-* Prompt chaining and routing
-* Knowledge-augmented agents
-* Cloud-native AI workflows
-* Validation gates and halt conditions
-
----
-
-## Project Goal
-
-The primary objective of this project is to demonstrate how **agentic AI workflows** can improve supply chain resilience, reduce manual coordination, and enable adaptive decision-making using modern cloud-based AI services.
-
----
-
-## Notes
-
-* The system is designed to run **entirely within Azure AI Foundry**
-* No local environment setup is required
-* All configuration is done via Foundry UI and prompt engineering
-* Screenshots and chat logs are used for validation and assessment
-
-
-
+If the SDK import fails, use the REST path and fill the endpoints shown in `src/foundry_rest.py`.
